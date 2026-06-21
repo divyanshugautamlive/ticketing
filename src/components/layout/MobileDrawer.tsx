@@ -115,22 +115,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               </p>
             </div>
           </div>
-        ) : (
-          <Link
-            href="/signin"
-            onClick={onClose}
-            className="btn-primary"
-            style={{
-              textAlign: "center",
-              padding: "12px",
-              textDecoration: "none",
-              marginBottom: "20px",
-              fontWeight: 600
-            }}
-          >
-            Sign In / Register
-          </Link>
-        )}
+        ) : null}
 
         {/* Navigation Links */}
         <div

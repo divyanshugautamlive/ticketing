@@ -704,6 +704,7 @@ input[type="radio"] {
 
 /* ── Support Bar ───────────────────────────────────────────── */
 .support-bar {
+  display: none !important; /* Completely removed/hidden in all views to avoid clutter on mobile */
   background-color: var(--nav);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 0;
@@ -2362,6 +2363,24 @@ input[type="radio"] {
     display: none;
   }
 
+  .navbar-signin {
+    display: none !important; /* Hide Sign In in the header on mobile to prevent wrapping */
+  }
+
+  .navbar-phone-text {
+    display: none !important; /* Hide phone number text on mobile */
+  }
+
+  .navbar-phone {
+    padding: 10px !important;
+    border-radius: 50% !important; /* Circular phone icon button for mobile */
+    width: 38px;
+    height: 38px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12) !important;
+    flex-shrink: 0;
+  }
+
   .navbar-hamburger {
     display: flex;
   }
@@ -2781,10 +2800,11 @@ input[type="radio"] {
 
 .expedia-input-container {
   position: relative;
-  flex: 1;
+  flex: 1 1 0px;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 0;
 }
 
 .expedia-input-group {
@@ -2889,7 +2909,9 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  flex: 1;
+  flex: 1 1 0px;
+  min-width: 0;
+  width: 0;
 }
 
 .expedia-date-fields {
@@ -3104,6 +3126,12 @@ input[type="radio"] {
     flex-direction: column;
     align-items: stretch;
     gap: 16px;
+  }
+
+  .expedia-input-container,
+  .expedia-dates-group {
+    width: 100% !important;
+    flex: none !important;
   }
   
   .expedia-search-tabs {

@@ -51,7 +51,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           {/* Phone (Hidden on small screens via CSS or simple media rules, but we can make it display inline) */}
           <a href={`tel:${PHONE_NUMBER}`} className="navbar-phone">
             <Phone size={14} />
-            <span style={{ display: "inline" }}>{PHONE_NUMBER}</span>
+            <span className="navbar-phone-text">{PHONE_NUMBER}</span>
           </a>
 
           {/* User Section */}
@@ -176,7 +176,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           ) : (
             <Link
               href="/signin"
-              className="btn-select"
+              className="btn-select navbar-signin"
               style={{
                 fontSize: "12px",
                 padding: "8px 16px",
