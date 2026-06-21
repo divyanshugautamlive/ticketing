@@ -474,15 +474,6 @@ export default function SearchCard() {
 
         {/* Footer actions */}
         <div className="popover-calendar-footer">
-          {activeTab === SearchCategory.Stays && (
-            <div className="calendar-offset-options">
-              <button type="button" className="calendar-offset-btn active">Exact dates</button>
-              <button type="button" className="calendar-offset-btn">± 1 day</button>
-              <button type="button" className="calendar-offset-btn">± 2 days</button>
-              <button type="button" className="calendar-offset-btn">± 3 days</button>
-              <button type="button" className="calendar-offset-btn">± 7 days</button>
-            </div>
-          )}
           <button 
             type="button" 
             className="calendar-done-btn"
