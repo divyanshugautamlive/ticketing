@@ -27,6 +27,8 @@ export interface SearchParams {
   children: number;
   /** Number of infant travelers */
   infants: number;
+  /** Number of rooms (Stays only) */
+  rooms?: number;
 
   /* ── Flight-specific ─────────────────── */
   /** Trip type: one-way, round-trip, multi-city */

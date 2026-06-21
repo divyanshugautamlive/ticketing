@@ -30,6 +30,32 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+const CAR_TIMES = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+
+const CAR_CLASSES = [
+  { value: "ALL", label: "All Classes" },
+  { value: "economy", label: "Economy" },
+  { value: "compact", label: "Compact" },
+  { value: "suv", label: "SUV" },
+  { value: "luxury", label: "Luxury" },
+  { value: "electric", label: "Electric" }
+];
+
+const TRAIN_CLASSES = [
+  { value: "ALL", label: "All Classes" },
+  { value: "1A", label: "AC First Class (1A)" },
+  { value: "2A", label: "AC 2 Tier (2A)" },
+  { value: "3A", label: "AC 3 Tier (3A)" },
+  { value: "SL", label: "Sleeper Class (SL)" }
+];
+
+const CABIN_CLASSES = [
+  { value: "economy", label: "Economy" },
+  { value: "premium_economy", label: "Premium Economy" },
+  { value: "business", label: "Business" },
+  { value: "first", label: "First Class" }
+];
+
 export default function SearchCard() {
   const router = useRouter();
   const { category, setCategory, params, setParams, executeSearch } = useSearch();
@@ -101,6 +127,14 @@ export default function SearchCard() {
   const [infantsOnLap, setInfantsOnLap] = useState(0);
   const [infantsInSeat, setInfantsInSeat] = useState(0);
   const [cabinClass, setCabinClass] = useState<CabinClass>(params.cabinClass || "economy");
+  const [rooms, setRooms] = useState(params.rooms || 1);
+
+  // Custom dropdown open states
+  const [isPickupTimeOpen, setIsPickupTimeOpen] = useState(false);
+  const [isDropoffTimeOpen, setIsDropoffTimeOpen] = useState(false);
+  const [isCarClassOpen, setIsCarClassOpen] = useState(false);
+  const [isTrainClassOpen, setIsTrainClassOpen] = useState(false);
+  const [isCabinClassOpen, setIsCabinClassOpen] = useState(false);
 
   // Flight specific sub-tabs
   const [tripType, setTripType] = useState<"one_way" | "round_trip" | "multi_city">("round_trip");
@@ -156,6 +190,9 @@ export default function SearchCard() {
 
   const getTravelersLabel = () => {
     const total = adults + children + infantsOnLap + infantsInSeat;
+    if (activeTab === SearchCategory.Stays) {
+      return `${total} traveler${total > 1 ? "s" : ""}, ${rooms} room${rooms > 1 ? "s" : ""}`;
+    }
     const cabinLabels: Record<string, string> = {
       economy: "Economy",
       premium_economy: "Premium Economy",
@@ -325,6 +362,7 @@ export default function SearchCard() {
       adults,
       children,
       infants: infantsOnLap + infantsInSeat,
+      rooms: targetCategory === SearchCategory.Stays ? rooms : undefined,
       
       // Category specific
       tripType: targetCategory === SearchCategory.Flights ? tripType : undefined,
@@ -671,40 +709,117 @@ export default function SearchCard() {
                 )}
               </div>
 
-              <div className="expedia-input-container">
-                <div className="expedia-input-group" style={{ paddingLeft: "14px" }}>
+              <div className="expedia-input-container" style={{ position: "relative" }}>
+                <div 
+                  className="expedia-input-group" 
+                  style={{ paddingLeft: "14px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "44px" }}
+                  onClick={() => setIsPickupTimeOpen(!isPickupTimeOpen)}
+                >
                   <span className="expedia-label">Pick-up time</span>
-                  <select value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} style={{ padding: "0", border: "none", background: "transparent", fontWeight: 600 }}>
-                    {["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"].map(time => (
-                      <option key={time} value={time}>{time}</option>
-                    ))}
-                  </select>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: "2px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>{pickupTime}</span>
+                    <ChevronDown size={14} style={{ color: "#5c5e62", marginLeft: "4px", flexShrink: 0 }} />
+                  </div>
                 </div>
+
+                {isPickupTimeOpen && (
+                  <>
+                    <div 
+                      style={{ position: "fixed", inset: 0, zIndex: 99, background: "transparent" }} 
+                      onClick={() => setIsPickupTimeOpen(false)} 
+                    />
+                    <div className="custom-select-popover">
+                      {CAR_TIMES.map(time => (
+                        <div
+                          key={time}
+                          onClick={() => {
+                            setPickupTime(time);
+                            setIsPickupTimeOpen(false);
+                          }}
+                          className={`custom-select-option ${time === pickupTime ? "active" : ""}`}
+                        >
+                          {time}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
-              <div className="expedia-input-container">
-                <div className="expedia-input-group" style={{ paddingLeft: "14px" }}>
+              <div className="expedia-input-container" style={{ position: "relative" }}>
+                <div 
+                  className="expedia-input-group" 
+                  style={{ paddingLeft: "14px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "44px" }}
+                  onClick={() => setIsDropoffTimeOpen(!isDropoffTimeOpen)}
+                >
                   <span className="expedia-label">Drop-off time</span>
-                  <select value={dropoffTime} onChange={(e) => setDropoffTime(e.target.value)} style={{ padding: "0", border: "none", background: "transparent", fontWeight: 600 }}>
-                    {["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"].map(time => (
-                      <option key={time} value={time}>{time}</option>
-                    ))}
-                  </select>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: "2px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>{dropoffTime}</span>
+                    <ChevronDown size={14} style={{ color: "#5c5e62", marginLeft: "4px", flexShrink: 0 }} />
+                  </div>
                 </div>
+
+                {isDropoffTimeOpen && (
+                  <>
+                    <div 
+                      style={{ position: "fixed", inset: 0, zIndex: 99, background: "transparent" }} 
+                      onClick={() => setIsDropoffTimeOpen(false)} 
+                    />
+                    <div className="custom-select-popover">
+                      {CAR_TIMES.map(time => (
+                        <div
+                          key={time}
+                          onClick={() => {
+                            setDropoffTime(time);
+                            setIsDropoffTimeOpen(false);
+                          }}
+                          className={`custom-select-option ${time === dropoffTime ? "active" : ""}`}
+                        >
+                          {time}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
-              <div className="expedia-input-container">
-                <div className="expedia-input-group" style={{ paddingLeft: "14px" }}>
+              <div className="expedia-input-container" style={{ position: "relative" }}>
+                <div 
+                  className="expedia-input-group" 
+                  style={{ paddingLeft: "14px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "44px" }}
+                  onClick={() => setIsCarClassOpen(!isCarClassOpen)}
+                >
                   <span className="expedia-label">Car class</span>
-                  <select value={carClass} onChange={(e) => setCarClass(e.target.value)} style={{ padding: "0", border: "none", background: "transparent", fontWeight: 600 }}>
-                    <option value="ALL">All Classes</option>
-                    <option value="economy">Economy</option>
-                    <option value="compact">Compact</option>
-                    <option value="suv">SUV</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="electric">Electric</option>
-                  </select>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: "2px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>
+                      {CAR_CLASSES.find(c => c.value === carClass)?.label || "All Classes"}
+                    </span>
+                    <ChevronDown size={14} style={{ color: "#5c5e62", marginLeft: "4px", flexShrink: 0 }} />
+                  </div>
                 </div>
+
+                {isCarClassOpen && (
+                  <>
+                    <div 
+                      style={{ position: "fixed", inset: 0, zIndex: 99, background: "transparent" }} 
+                      onClick={() => setIsCarClassOpen(false)} 
+                    />
+                    <div className="custom-select-popover">
+                      {CAR_CLASSES.map(cls => (
+                        <div
+                          key={cls.value}
+                          onClick={() => {
+                            setCarClass(cls.value);
+                            setIsCarClassOpen(false);
+                          }}
+                          className={`custom-select-option ${cls.value === carClass ? "active" : ""}`}
+                        >
+                          {cls.label}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               <button type="submit" className="expedia-btn-search">
@@ -827,7 +942,9 @@ export default function SearchCard() {
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                   >
                     <User className="expedia-icon-left" size={18} />
-                    <span className="expedia-label">Travelers, Cabin class</span>
+                    <span className="expedia-label">
+                      {activeTab === SearchCategory.Stays ? "Travelers, rooms" : "Travelers, Cabin class"}
+                    </span>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "2px" }}>
                       <div style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {getTravelersLabel()}
@@ -845,7 +962,9 @@ export default function SearchCard() {
                       />
                       
                       <div className="travelers-popover">
-                        <h4 className="popover-header">Travelers and Cabin class</h4>
+                        <h4 className="popover-header">
+                          {activeTab === SearchCategory.Stays ? "Travelers and rooms" : "Travelers and Cabin class"}
+                        </h4>
                         
                         {/* Adults Counter */}
                         <div className="popover-row">
@@ -954,20 +1073,78 @@ export default function SearchCard() {
                           </div>
                         </div>
 
-                        {/* Cabin Class select */}
-                        <div className="popover-select-group">
-                          <label>Cabin class</label>
-                          <select 
-                            className="popover-select"
-                            value={cabinClass}
-                            onChange={(e) => setCabinClass(e.target.value as CabinClass)}
-                          >
-                            <option value="economy">Economy</option>
-                            <option value="premium_economy">Premium Economy</option>
-                            <option value="business">Business</option>
-                            <option value="first">First Class</option>
-                          </select>
-                        </div>
+                        {/* Rooms Counter (Stays only) */}
+                        {activeTab === SearchCategory.Stays && (
+                          <div className="popover-row" style={{ borderTop: "1px solid var(--border)", paddingTop: "16px", marginTop: "8px" }}>
+                            <div className="popover-row-label">
+                              <span className="popover-label-title">Rooms</span>
+                            </div>
+                            <div className="popover-counter">
+                              <button 
+                                type="button" 
+                                className="counter-btn"
+                                disabled={rooms <= 1}
+                                onClick={() => setRooms(rooms - 1)}
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="counter-value">{rooms}</span>
+                              <button 
+                                type="button" 
+                                className="counter-btn"
+                                disabled={rooms >= 8}
+                                onClick={() => setRooms(rooms + 1)}
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Cabin Class select (Flights only) */}
+                        {activeTab === SearchCategory.Flights && (
+                          <div className="popover-select-group" style={{ position: "relative" }}>
+                            <label style={{ display: "block", marginBottom: "6px" }}>Cabin class</label>
+                            <div 
+                              className="popover-select" 
+                              style={{ cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between" }}
+                              onClick={() => setIsCabinClassOpen(!isCabinClassOpen)}
+                            >
+                              <span>
+                                {CABIN_CLASSES.find(c => c.value === cabinClass)?.label || "Economy"}
+                              </span>
+                              <ChevronDown size={14} style={{ color: "#5c5e62", marginLeft: "4px" }} />
+                            </div>
+
+                            {isCabinClassOpen && (
+                              <>
+                                <div 
+                                  style={{ position: "fixed", inset: 0, zIndex: 101, background: "transparent" }} 
+                                  onClick={() => setIsCabinClassOpen(false)} 
+                                />
+                                <div className="custom-select-popover" style={{
+                                  bottom: "calc(100% + 4px)",
+                                  top: "auto",
+                                  backgroundColor: "var(--surface)",
+                                  zIndex: 102
+                                }}>
+                                  {CABIN_CLASSES.map(cabin => (
+                                    <div
+                                      key={cabin.value}
+                                      onClick={() => {
+                                        setCabinClass(cabin.value as CabinClass);
+                                        setIsCabinClassOpen(false);
+                                      }}
+                                      className={`custom-select-option ${cabin.value === cabinClass ? "active" : ""}`}
+                                    >
+                                      {cabin.label}
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
 
                         {/* Popover footer */}
                         <div className="popover-footer">
@@ -1015,17 +1192,43 @@ export default function SearchCard() {
             {/* Trains specific details */}
             {activeTab === SearchCategory.Trains && (
               <div style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: "4px" }}>
-                <div className="expedia-input-container" style={{ maxWidth: "200px" }}>
-                  <div className="expedia-input-group" style={{ paddingLeft: "14px", minHeight: "44px" }}>
+                <div className="expedia-input-container" style={{ maxWidth: "200px", position: "relative" }}>
+                  <div 
+                    className="expedia-input-group" 
+                    style={{ paddingLeft: "14px", minHeight: "44px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center" }}
+                    onClick={() => setIsTrainClassOpen(!isTrainClassOpen)}
+                  >
                     <span className="expedia-label">Preferred Class</span>
-                    <select value={trainClass} onChange={(e) => setTrainClass(e.target.value)} style={{ border: "none", background: "transparent", fontWeight: 600, padding: 0 }}>
-                      <option value="ALL">All Classes</option>
-                      <option value="1A">AC First Class (1A)</option>
-                      <option value="2A">AC 2 Tier (2A)</option>
-                      <option value="3A">AC 3 Tier (3A)</option>
-                      <option value="SL">Sleeper Class (SL)</option>
-                    </select>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginTop: "2px" }}>
+                      <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>
+                        {TRAIN_CLASSES.find(c => c.value === trainClass)?.label || "All Classes"}
+                      </span>
+                      <ChevronDown size={14} style={{ color: "#5c5e62", marginLeft: "4px", flexShrink: 0 }} />
+                    </div>
                   </div>
+
+                  {isTrainClassOpen && (
+                    <>
+                      <div 
+                        style={{ position: "fixed", inset: 0, zIndex: 99, background: "transparent" }} 
+                        onClick={() => setIsTrainClassOpen(false)} 
+                      />
+                      <div className="custom-select-popover">
+                        {TRAIN_CLASSES.map(cls => (
+                          <div
+                            key={cls.value}
+                            onClick={() => {
+                              setTrainClass(cls.value);
+                              setIsTrainClassOpen(false);
+                            }}
+                            className={`custom-select-option ${cls.value === trainClass ? "active" : ""}`}
+                          >
+                            {cls.label}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
