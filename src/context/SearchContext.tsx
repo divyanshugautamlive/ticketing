@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { SearchCategory, SearchParams, FilterState } from "@/types/search";
 import { mockFlights } from "@/data/flights";
 import { mockCars } from "@/data/cars";
@@ -12,9 +12,9 @@ interface SearchContextType {
   category: SearchCategory;
   setCategory: (category: SearchCategory) => void;
   params: SearchParams;
-  setParams: (params: SearchParams) => void;
+  setParams: React.Dispatch<React.SetStateAction<SearchParams>>;
   filters: FilterState;
-  setFilters: (filters: FilterState) => void;
+  setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   results: any[];
   allResults: any[]; // unfiltered
   loading: boolean;
@@ -43,7 +43,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const setCategory = (cat: SearchCategory) => {
+  const setCategory = useCallback((cat: SearchCategory) => {
     setCategoryState(cat);
     setParams(prev => ({
       ...prev,
@@ -61,9 +61,9 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setFilters({ ...defaultFilters });
     setResults([]);
     setAllResults([]);
-  };
+  }, [setCategoryState, setParams, setFilters, setResults, setAllResults]);
 
-  const executeSearch = async (customParams?: SearchParams) => {
+  const executeSearch = useCallback(async (customParams?: SearchParams) => {
     const searchParams = customParams || params;
     setLoading(true);
     setError(null);
@@ -154,7 +154,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         resolve(filtered);
       }, 800); // Simulated API latency
     });
-  };
+  }, [params, setLoading, setError, setAllResults, setResults]);
 
   // Effect to apply sidebar filters to the allResults set
   useEffect(() => {
@@ -234,13 +234,13 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setResults(filtered);
   }, [filters, allResults, category]);
 
-  const resetSearch = () => {
+  const resetSearch = useCallback(() => {
     setParams({ ...defaultParams });
     setFilters({ ...defaultFilters });
     setResults([]);
     setAllResults([]);
     setError(null);
-  };
+  }, [setParams, setFilters, setResults, setAllResults, setError]);
 
   return (
     <SearchContext.Provider

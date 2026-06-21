@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Compass, Users, Award, ShieldCheck, Heart, PhoneCall } from "lucide-react";
 
 export default function AboutPage() {
@@ -31,11 +32,14 @@ export default function AboutPage() {
             marginBottom: "48px"
           }}
         >
-          <div style={{ height: "340px" }}>
-            <img 
+          <div style={{ height: "340px", position: "relative" }}>
+            <Image 
               src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80" 
               alt="Travel Planning" 
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+              style={{ objectFit: "cover" }}
             />
           </div>
           <div style={{ padding: "40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>

@@ -42,7 +42,7 @@ export default function TrainsPage({ searchParams }: TrainsPageProps) {
       setTrains(filtered);
       setLoading(false);
     }, 600);
-  }, [resolvedSearchParams]);
+  }, [resolvedSearchParams, setCategory, setLoading, setTrains]);
 
   // Apply Sidebar Filters
   const getFilteredTrains = () => {

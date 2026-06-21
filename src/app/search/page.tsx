@@ -41,7 +41,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
       // Execute default search on mount if results are empty
       executeSearch();
     }
-  }, [resolvedSearchParams]);
+  }, [resolvedSearchParams, setCategory, executeSearch]);
 
   // Sort logic
   const getSortedResults = () => {

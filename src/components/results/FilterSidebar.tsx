@@ -23,8 +23,8 @@ export default function FilterSidebar() {
 
     setMinPrice(0);
     setMaxPrice(max);
-    setFilters({ ...filters, priceRange: [0, max] });
-  }, [category]);
+    setFilters(prev => ({ ...prev, priceRange: [0, max] }));
+  }, [category, setFilters]);
 
   const handlePriceChange = (min: number, max: number) => {
     setMinPrice(min);

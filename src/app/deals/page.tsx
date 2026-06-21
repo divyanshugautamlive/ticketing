@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/navigation";
+import Image from "next/image";
 import { mockDeals, DealItem } from "@/data/deals";
 import { SearchCategory } from "@/types/search";
 import { Plane, Car, Home, Compass, Train, Tag, Percent, ArrowRight } from "lucide-react";
@@ -121,10 +122,12 @@ export default function DealsPage() {
             >
               {/* Image & Badge container */}
               <div style={{ position: "relative", height: "180px", overflow: "hidden" }}>
-                <img 
+                <Image 
                   src={deal.image.src} 
                   alt={deal.image.alt} 
-                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform var(--transition-slow)" }} 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: "cover", transition: "transform var(--transition-slow)" }} 
                   className="deal-image"
                 />
                 
