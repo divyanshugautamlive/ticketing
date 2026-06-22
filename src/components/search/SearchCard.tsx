@@ -1235,27 +1235,7 @@ export default function SearchCard() {
           </div>
         )}
 
-        {/* 4. Bundle & Save Checkbox option (visual and functional helper) */}
-        {(activeTab === SearchCategory.Stays || activeTab === SearchCategory.Flights) && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "16px" }}>
-            <input type="checkbox" id="bundleSave" style={{ cursor: "pointer" }} />
-            <label 
-              htmlFor="bundleSave" 
-              style={{ 
-                textTransform: "none", 
-                margin: 0, 
-                fontWeight: 500, 
-                fontSize: "13px", 
-                color: "var(--text)", 
-                cursor: "pointer",
-                letterSpacing: "0",
-                display: "inline-block"
-              }}
-            >
-              {activeTab === SearchCategory.Stays ? "Add a flight to Bundle & Save*" : "Add a stay to Bundle & Save*"}
-            </label>
-          </div>
-        )}
+
 
       </form>
     </div>
